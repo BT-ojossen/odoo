@@ -262,7 +262,21 @@ def load_information_from_description_file(module, mod_path=None):
 
             f = tools.file_open(terp_file)
             try:
-                info.update(eval(f.read()))
+                fileContent = f.read()
+                values = eval(fileContent)
+                if ('bt_swissdec_demo' in tools.config.options and
+                            tools.config['bt_swissdec_demo'] == True):
+                    if ('bt_swissdec_demo_data_muster' in tools.config.options and
+                                tools.config['bt_swissdec_demo_data_muster'] == True and
+                                'data_swissdec_demo' in values):
+                        # set the data
+                        values['data'].extend(values['data_swissdec_demo'])
+                    elif ('bt_swissdec_demo_data_process' in tools.config.options and
+                                  tools.config['bt_swissdec_demo_data_process'] == True and
+                                  'data_swissdec_demo_qst' in values):
+                        # set the data
+                        values['data'].extend(values['data_swissdec_demo_qst'])
+                info.update(values)
             finally:
                 f.close()
 

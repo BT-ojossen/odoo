@@ -1249,6 +1249,8 @@ class BaseModel(object):
 
     @api.multi
     def _validate_fields(self, field_names):
+        # print '(jool) self: ', self
+        # print '(jool) field_names: ', field_names
         field_names = set(field_names)
 
         # old-style constraint methods
@@ -1256,10 +1258,13 @@ class BaseModel(object):
         cr, uid, context = self.env.args
         ids = self.ids
         errors = []
+        # print '(jool) self._constraints: ', self._constraints
         for fun, msg, names in self._constraints:
             try:
                 # validation must be context-independent; call ``fun`` without context
+                # print '(jool) names: ', names
                 valid = names and not (set(names) & field_names)
+                # print '(jool) valid: ', valid
                 valid = valid or fun(self._model, cr, uid, ids)
                 extra_error = None
             except Exception, e:
@@ -1275,6 +1280,8 @@ class BaseModel(object):
                 else:
                     res_msg = trans._get_source(self._name, 'constraint', self.env.lang, msg)
                 if extra_error:
+                    print '(jool) res_msg: ', res_msg
+                    print '(jool) extra_error: ', extra_error
                     res_msg += "\n\n%s\n%s" % (_('Error details:'), extra_error)
                 errors.append(res_msg)
         if errors:
@@ -4363,6 +4370,8 @@ class BaseModel(object):
         recs.modified(upd_todo)
 
         # check Python constraints
+        # print '(jool) recs: ', recs
+        # print '(jool) vals: ', vals
         recs._validate_fields(vals)
 
         result += self._store_get_values(cr, user, [id_new],

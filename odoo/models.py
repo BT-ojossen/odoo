@@ -4302,6 +4302,22 @@ class BaseModel(object):
             if field.type == 'one2many':
                 # duplicate following the order of the ids because we'll rely on
                 # it later for copying translations in copy_translation()!
+                # TEST: 05.12.17 13:07: jool1: test jool1
+                # print '(jool) field: ', field
+                # print '(jool) name: ', name
+                # lines_test = []
+                # for rec in self[name].sorted(key='id'):
+                #     print '(jool) rec: ', rec
+                #     test_0 = rec.copy_data()
+                #     print '(jool) test_0: ', test_0
+                #     test = test_0[0]
+                #     print '(jool) test: ', test
+                #     if test != {}:
+                #         lines_test.append(test)
+                # print '(jool) lines_test: ', lines_test
+                # lines = lines_test
+                # print 'DONE'
+                # ENDTEST: 05.12.17 13:07: jool1: test jool1
                 lines = [rec.copy_data()[0] for rec in self[name].sorted(key='id')]
                 # the lines are duplicated using the wrong (old) parent, but then
                 # are reassigned to the correct one thanks to the (0, 0, ...)
@@ -4411,6 +4427,9 @@ class BaseModel(object):
         existing = self.browse(ids + new_ids)
         if len(existing) < len(self):
             # mark missing records in cache with a failed value
+            # print 'ERROR in def exists'
+            # if ids == [777]:
+            #     print test
             exc = MissingError(_("Record does not exist or has been deleted."))
             (self - existing)._cache.update(FailedValue(exc))
         return existing
@@ -5364,6 +5383,9 @@ class BaseModel(object):
         def process(res):
             if not res:
                 return
+            print '(jool) field_name: ', field_name
+            print '(jool) onchange: ', onchange
+            print '(jool) res: ', res
             if res.get('value'):
                 res['value'].pop('id', None)
                 self.update({key: val for key, val in res['value'].iteritems() if key in self._fields})
@@ -5385,6 +5407,7 @@ class BaseModel(object):
 
         # onchange V8
         if onchange in ("1", "true"):
+            print '(jool) self._onchange_methods.get(field_name, ()): ', self._onchange_methods.get(field_name, ())
             for method in self._onchange_methods.get(field_name, ()):
                 method_res = method(self)
                 process(method_res)
@@ -5488,6 +5511,8 @@ class BaseModel(object):
             with env.do_in_onchange():
                 # apply field-specific onchange methods
                 if field_onchange.get(name):
+                    print '(jool) field_onchange: ', field_onchange
+                    print '(jool) name: ', name
                     record._onchange_eval(name, field_onchange[name], result)
 
                 # force re-evaluation of function fields on secondary records

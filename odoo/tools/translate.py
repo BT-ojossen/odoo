@@ -963,6 +963,8 @@ def trans_generate(lang, modules, cr):
                 # Babel 0.9.6 yields lineno, message, comments
                 # Babel 1.3 yields lineno, message, comments, context
                 lineno, message, comments = extracted[:3]
+                # TODO: 30.10.17 07:12: jool1: only added in order to get all 0 for .py translations (ex. #: code:addons/bt_swissdec/hr/res_partner_ext.py:0)
+                lineno = 0
                 push_translation(module, trans_type, display_path, lineno,
                                  encode(message), comments + extra_comments)
         except Exception:

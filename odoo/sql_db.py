@@ -228,8 +228,9 @@ class Cursor(object):
 
         try:
             params = params or None
+            _logger.debug("params: %s", params)
             res = self._obj.execute(query, params)
-        except Exception:
+        except Exception, e:
             if self._default_log_exceptions if log_exceptions is None else log_exceptions:
                 _logger.info("bad query: %s", self._obj.query or query)
             raise
